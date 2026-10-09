@@ -1,0 +1,17 @@
+.env
+.venv/
+venv/
+
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+
+runtime/
+ml_dataset.json
+DejaVuSans.ttf
+
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

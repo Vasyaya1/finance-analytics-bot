@@ -1,0 +1,32 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: finbot
+      POSTGRES_PASSWORD: finbot      # для демо; в продакшене замените
+      POSTGRES_DB: finbot
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U finbot -d finbot"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  bot:
+    build: .
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://finbot:finbot@db:5432/finbot
+      NLP_DATASET_PATH: /app/runtime/ml_dataset.json
+    volumes:
+      - ./runtime:/app/runtime
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  pgdata:
